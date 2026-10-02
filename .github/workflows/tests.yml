@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/automatiza-testes-gestao-alunos
   pull_request:
     branches:
       - main
