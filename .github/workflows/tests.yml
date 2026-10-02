@@ -13,6 +13,11 @@ jobs:
   test:
     name: Executar testes automatizados
     runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: mongodb://127.0.0.1:27017/gestao-de-alunos-test
+      BASE_URL: http://127.0.0.1:3000
+      ADMIN_EMAIL: admin@escola.com
+      ADMIN_PASSWORD: admin123
 
     services:
       mongodb:
@@ -38,7 +43,17 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Iniciar API
+        run: |
+          npm start > /tmp/gestao-de-alunos-api.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent "$BASE_URL/" > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/gestao-de-alunos-api.log
+          exit 1
+
       - name: Executar testes automatizados
         run: npm test
-        env:
-          MONGODB_URI: mongodb://127.0.0.1:27017/gestao-de-alunos-test
