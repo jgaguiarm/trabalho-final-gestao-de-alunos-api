@@ -1,0 +1,54 @@
+{
+
+  "alunos": [
+    {
+      "nome": "Wedney Silva",
+      "email": "wedney.silva.8765@example.com",
+      "matricula": "W126543526",
+      "senha": "123456"
+    },
+    {
+      "nome": "Marcos Almeida",
+      "email": "marcos.almeida.8765@example.com",
+      "matricula": "M126543527",
+      "senha": "123456"
+    },
+    {
+      "nome": "Juliana Santos",
+      "email": "juliana.santos.8765@example.com",
+      "matricula": "J126543528",
+      "senha": "123456"
+    },
+    {
+      "nome": "Carlos Oliveira",
+      "email": "carlos.oliveira.8765@example.com",
+      "matricula": "C126543529",
+      "senha": "123456"
+    },
+    {
+      "nome": "Fernanda Costa",
+      "email": "fernanda.costa.8765@example.com",
+      "matricula": "F126543530",
+      "senha": "123456"
+    }
+  ],
+
+   "disciplina": {
+    "nome": "Algoritmos e Programação",
+    "codigo": "AP03455",
+    "cargaHoraria": 80
+  },
+
+  "trabalho": {
+    "titulo": "Trabalho de Algoritmos e Programação"
+  },
+
+  "statusCodeEsperado": {
+    "loginAdmin": 200,
+    "cadastroAluno": 201,
+    "loginAluno": 200,
+    "cadastroDisciplina": 201,
+    "matriculaAluno": 201,
+    "entregaTrabalho": 201
+  }
+}
