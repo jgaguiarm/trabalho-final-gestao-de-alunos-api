@@ -50,4 +50,29 @@ describe('Fluxo de alunos', () => {
         }
     });
 
+    it('deve realizar login como aluno', async () => {
+
+        const loginAdminToken = await loginAdmin();
+
+        for (const aluno of testData.alunos) {
+
+            // Cadastra o aluno
+            const cadastroAlunoResposta = await api()
+                .post('/api/admin/alunos')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', loginAdminToken)
+                .send(aluno);
+
+            expect(cadastroAlunoResposta.status).to.equal(testData.statusCodeEsperado.cadastroAluno);
+
+            // Login do aluno
+            const loginAlunoResposta = await loginAluno(aluno);
+
+            expect(loginAlunoResposta.status).to.equal(testData.statusCodeEsperado.loginAluno);
+            expect(loginAlunoResposta.body).to.have.property('token');
+            expect(loginAlunoResposta.body.token).to.be.a('string').and.not.be.empty;
+
+        }
+    });
+
 })
