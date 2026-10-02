@@ -1,13 +1,17 @@
-name: Testes de API
+name: CI - Testes de API
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   test:
+    name: Executar testes automatizados
     runs-on: ubuntu-latest
 
     services:
@@ -34,7 +38,7 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: Executar testes
+      - name: Executar testes automatizados
         run: npm test
         env:
           MONGODB_URI: mongodb://127.0.0.1:27017/gestao-de-alunos-test
