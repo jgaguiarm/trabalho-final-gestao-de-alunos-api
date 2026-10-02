@@ -75,4 +75,67 @@ describe('Fluxo de alunos', () => {
         }
     });
 
+    it('deve registrar a entrega de um trabalho como aluno', async () => {
+
+        const loginAdminToken = await loginAdmin();
+
+        const cadastroDisciplinaResposta = await api()
+            .post('/api/admin/disciplinas')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', loginAdminToken)
+            .send(testData.disciplina);
+
+        expect(cadastroDisciplinaResposta.status)
+            .to.equal(testData.statusCodeEsperado.cadastroDisciplina);
+
+        const disciplinaId = cadastroDisciplinaResposta.body.id;
+
+        for (const aluno of testData.alunos) {
+
+            const cadastroAlunoResposta = await api()
+                .post('/api/admin/alunos')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', loginAdminToken)
+                .send(aluno);
+
+            expect(cadastroAlunoResposta.status)
+                .to.equal(testData.statusCodeEsperado.cadastroAluno);
+
+            const alunoId = cadastroAlunoResposta.body.id;
+
+            const matriculaResposta = await api()
+                .post(`/api/admin/disciplinas/${disciplinaId}/matriculas`)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', loginAdminToken)
+                .send({
+                    alunoId
+                });
+
+            expect(matriculaResposta.status)
+                .to.equal(testData.statusCodeEsperado.matriculaAluno);
+
+            const loginAlunoResposta = await loginAluno(aluno);
+
+            expect(loginAlunoResposta.status)
+                .to.equal(testData.statusCodeEsperado.loginAluno);
+
+            expect(loginAlunoResposta.body)
+                .to.have.property('token');
+
+            const tokenAluno = `Bearer ${loginAlunoResposta.body.token}`;
+
+            const entregaTrabalhoResposta = await api()
+                .post(`/api/alunos/${alunoId}/trabalhos`)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', tokenAluno)
+                .send({
+                    disciplinaId,
+                    titulo: testData.trabalho.titulo
+                });
+
+            expect(entregaTrabalhoResposta.status)
+                .to.equal(testData.statusCodeEsperado.entregaTrabalho);
+        }
+    });
+
 })
