@@ -1,10 +1,13 @@
 import { expect } from 'chai';
+import { loginAdmin, loginAluno } from '../helpers/auth.js';
 import { api } from '../helpers/api.js';
 import testData from '../fixtures/testData.json' with { type: 'json' };
 import { limparDadosTeste } from '../helpers/database.js';
 import 'dotenv/config';
 
 describe('Fluxo de alunos', () => {
+
+     let alunosCriados = [];
 
     beforeEach(async () => {
         await limparDadosTeste();
@@ -22,6 +25,29 @@ describe('Fluxo de alunos', () => {
 
         expect(loginResposta.status).to.equal(testData.statusCodeEsperado.loginAdmin);
         expect(loginResposta.body).to.have.property('token');
+    });
+
+    it('deve logar como Administrador e cadastrar um alunos', async () => {
+
+        const login = await loginAdmin();
+
+        // Act
+        for (const aluno of testData.alunos) {
+            const cadastroAlunoResposta = await api()
+                .post('/api/admin/alunos')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', login)
+                .send(aluno);
+
+
+            // Assert
+            expect(cadastroAlunoResposta.status).to.equal(testData.statusCodeEsperado.cadastroAluno);
+            expect(cadastroAlunoResposta.body.nome).to.equal(aluno.nome);
+            expect(cadastroAlunoResposta.body.email).to.equal(aluno.email);
+            expect(cadastroAlunoResposta.body.matricula).to.equal(aluno.matricula);
+
+            alunosCriados.push(cadastroAlunoResposta.body);
+        }
     });
 
 })
